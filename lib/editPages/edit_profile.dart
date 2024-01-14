@@ -2,11 +2,19 @@ import 'package:flutter/material.dart';
 import 'edit_password.dart';
 import 'package:resBackEnd/information.dart';
 import 'package:resBackEnd/MenuPages/menu.dart';
+import '/information.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:resBackEnd/firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:file_picker/file_picker.dart';
 
 User1 userInfo = User1();
 
-void main() {
+Future<void> main() async {
   runApp(MaterialApp(home: editProfile()));
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class editProfile extends StatefulWidget {
@@ -30,6 +38,12 @@ class _editProfileState extends State<editProfile> {
   void initState() {
     super.initState();
     _selectedGender = userInfo.checkGender(User1.getGender());
+  }
+
+  FilePickerResult? img;
+  Future<void> pickAnImage() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
   }
 
   @override
@@ -79,6 +93,19 @@ class _editProfileState extends State<editProfile> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Center(
+                  child: IconButton(
+                      onPressed: () {
+                        pickAnImage();
+                      },
+                      icon: CircleAvatar(
+                        radius: 70,
+                        backgroundImage: NetworkImage(User1.getPhoto()),
+                      )),
+                ),
+                SizedBox(
+                  height: 45,
+                ),
                 package(
                   1,
                   "FullName",
