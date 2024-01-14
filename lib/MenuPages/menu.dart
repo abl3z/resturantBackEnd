@@ -31,10 +31,10 @@ class Menu extends StatefulWidget {
   final String? email;
   const Menu({super.key, this.fullName, this.email});
   @override
-  State<Menu> createState() => _MenuState();
+  State<Menu> createState() => MenuState();
 }
 
-class _MenuState extends State<Menu> {
+class MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -140,10 +140,24 @@ class mydrwr extends StatefulWidget {
   const mydrwr({super.key});
 
   @override
-  State<mydrwr> createState() => _mydrwrState();
+  State<mydrwr> createState() => mydrwrState();
 }
 
-class _mydrwrState extends State<mydrwr> {
+class mydrwrState extends State<mydrwr> {
+  UserDetails? user;
+
+  Future<void> fetchUserData() async {
+    String userid = Auth().auth.currentUser!.uid;
+    UserDetails? usr = await FirebaseService().getUserDetails(userid);
+    if (usr != null) {
+      setState(() {
+        user = usr;
+      });
+    } else {
+      print("user not available");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -157,17 +171,15 @@ class _mydrwrState extends State<mydrwr> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             accountEmail: Text(
-              Auth().auth.currentUser!.email.toString(),
+              User1.getEmail(),
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.amber,
-              child: Icon(
-                Icons.person,
-                size: 48,
-                color: Colors.white,
-              ),
-            ),
+                backgroundColor: Colors.amber,
+                child: CircleAvatar(
+                  radius: 70,
+                  backgroundImage: NetworkImage(User1.getPhoto()),
+                )),
             decoration: BoxDecoration(
               color: Color.fromRGBO(23, 70, 162, 1),
             ),

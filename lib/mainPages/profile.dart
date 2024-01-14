@@ -6,8 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:resBackEnd/firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-User1 userInfo = User1();
-
 Future<void> main() async {
   runApp(
     profilePage(),
@@ -41,6 +39,9 @@ class _ppState extends State<PP> {
   //   });
   //   return '';
   // }
+  User1 userInfo = User1();
+
+  UserDetails? user;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +88,10 @@ class _ppState extends State<PP> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            CircleAvatar(
+              radius: 70,
+              backgroundImage: NetworkImage(User1.getPhoto()),
+            ),
             SizedBox(
               height: 50,
             ),
@@ -185,7 +190,7 @@ class _ppState extends State<PP> {
                         style: BorderStyle.solid,
                       ),
                     ),
-                    child: pp(Auth().auth.currentUser!.email.toString()),
+                    child: pp(User1.getEmail()),
                   ),
                 ),
               ],

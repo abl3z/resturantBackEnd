@@ -42,42 +42,54 @@ class _InfoState extends State<Info> {
   TextEditingController pswd = TextEditingController();
   TextEditingController pswd_confirm = TextEditingController();
   var _formKey = GlobalKey<FormState>();
+
+  UserDetails? user;
+
+  Future<void> fetchUserData() async {
+    String userid = Auth().auth.currentUser!.uid;
+    UserDetails? usr = await FirebaseService().getUserDetails(userid);
+    if (usr != null) {
+      setState(() {
+        user = usr;
+      });
+    } else {
+      print("user not available");
+    }
+  }
+
   final DatabaseReference UserRef =
       FirebaseDatabase.instance.ref().child("users");
   String gender1 = "";
-  void handleSignUp() {
-    Auth()
-        .signUp(email: emailController.text, password: pswd.text)
-        .whenComplete(() {
-      print("user created");
-      try {
-        Map<dynamic, dynamic> user2 = {
-          "email": emailController.text,
-          "first name": firstNameController.text,
-          "gender": gender1,
-          "phone number": PhNum.text,
-          "password": pswd.text,
-        };
-
-        Future.delayed(Duration(seconds: 4)).whenComplete(() {
-          if (Auth().auth.currentUser == null) {
-            print("user uid is null");
-          }
-          print(Auth().auth.currentUser!.uid);
-          UserRef.child(Auth().auth.currentUser!.uid).set(user2).then((value) {
+  Future<void> handleSignUp() async {
+    try {
+      await Auth()
+          .signUp(email: emailController.text, password: pswd.text)
+          .whenComplete(() {
+        Future.delayed(Duration(seconds: 3)).then((value) {
+          UserDetails user = UserDetails(
+              name: firstNameController.text,
+              email: emailController.text,
+              phone_Num: PhNum.text,
+              photo:
+                  "https://i.kym-cdn.com/entries/icons/facebook/000/041/742/cover3.jpg");
+          print("registered success");
+          var userid = Auth().auth.currentUser!.uid;
+          userref
+              .child("users")
+              .child(userid)
+              .set(user.toMap())
+              .whenComplete(() {
             print("user added to database");
-          }).catchError((erorr) {
-            print("failed to add user to database");
-            print(erorr.toString());
+            fetchUserData();
           });
         });
-      } on FirebaseException catch (error) {
-        print("error eccured...........................................");
-        print(error.message);
-      }
-    });
+      });
+    } on FirebaseAuthException catch (e) {
+      print(e.toString());
+    }
   }
 
+  final DatabaseReference userref = FirebaseDatabase.instance.reference();
   @override
   Widget build(BuildContext context) {
     return SafeArea(

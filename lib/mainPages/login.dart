@@ -76,10 +76,29 @@ class _MyFormState extends State<MyForm> {
   TextEditingController pswd = TextEditingController();
   TextEditingController email2 = TextEditingController();
   bool isObscureConfirmPassword = true;
-  void handleSignIn() {
-    Auth().signIn(email: email2.text, password: pswd.text).whenComplete(() {
-      print("user signed");
-    });
+
+  UserDetails? user;
+
+  Future<void> fetchUserData() async {
+    String userid = Auth().auth.currentUser!.uid;
+    UserDetails? usr = await FirebaseService().getUserDetails(userid);
+    if (usr != null) {
+      setState(() {
+        user = usr;
+      });
+    } else {
+      print("user not available");
+    }
+  }
+
+  Future<void> handleSignin() async {
+    try {
+      await Auth().signIn(email: email2.text, password: pswd.text);
+      print("Logged in Successfully");
+      fetchUserData();
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+    }
   }
 
   @override
@@ -202,7 +221,8 @@ class _MyFormState extends State<MyForm> {
                         ),
                         onPressed: () {
                           if (_key.currentState!.validate()) {
-                            handleSignIn();
+                            handleSignin();
+                            User1.setEmail(email2.text);
 
                             Navigator.push(
                               context,

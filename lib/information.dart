@@ -1,3 +1,6 @@
+import 'dart:js_interop';
+import 'dart:js_util';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,12 +32,64 @@ class Auth {
   }
 }
 
+class UserDetails {
+  String name;
+  String email;
+  String phone_Num;
+  String photo;
+
+  UserDetails(
+      {required this.email,
+      required this.name,
+      required this.phone_Num,
+      required this.photo});
+  Map<dynamic, dynamic> toMap() {
+    return {
+      "name": name,
+      "email": email,
+      "phone_Num": phone_Num,
+      "photo": photo
+    };
+  }
+
+  factory UserDetails.fromMap(Map<dynamic, dynamic> map) {
+    User1.setEmail(map["email"]);
+    User1.setFullName(map["name"]);
+    User1.setPhoneNumber(map["phone_Num"]);
+    User1.setPhoto(map["photo"]);
+    return UserDetails(
+        email: map["email"],
+        name: map["name"],
+        phone_Num: map["phone_Num"],
+        photo: map["photo"]);
+  }
+}
+
+class FirebaseService {
+  Future<UserDetails?> getUserDetails(String useruid) async {
+    try {
+      DatabaseReference refh = FirebaseDatabase.instance.ref().child("users");
+      DatabaseEvent event = await refh.child(useruid).once();
+      if (event.snapshot.value != null) {
+        Map<dynamic, dynamic> snapdata = event.snapshot.value as dynamic;
+        return UserDetails.fromMap(snapdata as Map<dynamic, dynamic>);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    return null;
+  }
+}
+
 class User1 {
-  static Map<String, String> _userInfo = {
+  static Map<String, String> userInfo = {
     'fullName': '',
     'email': '',
     'phoneNumber': '',
     'gender': 'male',
+    'photoUrl': ''
   };
 
   static Map<String, String> _pass = {
@@ -43,39 +98,47 @@ class User1 {
   };
 
   static String getFullName() {
-    return _userInfo['fullName']!;
+    return userInfo['fullName']!;
   }
 
   static void setFullName(String fullName) {
-    _userInfo['fullName'] = fullName;
+    userInfo['fullName'] = fullName;
+  }
+
+  static String getPhoto() {
+    return userInfo['photoUrl']!;
+  }
+
+  static void setPhoto(String photoUrl) {
+    userInfo['photoUrl'] = photoUrl;
   }
 
   static String getGender() {
-    return _userInfo['gender']!;
+    return userInfo['gender']!;
   }
 
   static void setGender(int gender) {
     if (gender == 1) {
-      _userInfo['gender'] = "female";
+      userInfo['gender'] = "female";
     } else {
-      _userInfo['gender'] = "male";
+      userInfo['gender'] = "male";
     }
   }
 
   static String getEmail() {
-    return _userInfo['email']!;
+    return userInfo['email']!;
   }
 
   static void setEmail(String email) {
-    _userInfo['email'] = email;
+    userInfo['email'] = email;
   }
 
   static String getPhoneNumber() {
-    return _userInfo['phoneNumber']!;
+    return userInfo['phoneNumber']!;
   }
 
   static void setPhoneNumber(String phoneNumber) {
-    _userInfo['phoneNumber'] = phoneNumber;
+    userInfo['phoneNumber'] = phoneNumber;
   }
 
   static String getPassword() {
@@ -95,10 +158,10 @@ class User1 {
   }
 
   static void clearUserInfo() {
-    _userInfo['fullName'] = '';
-    _userInfo['email'] = '';
-    _userInfo['phoneNumber'] = '';
-    _userInfo['gender'] = 'male';
+    userInfo['fullName'] = '';
+    userInfo['email'] = '';
+    userInfo['phoneNumber'] = '';
+    userInfo['gender'] = 'male';
   }
 
   static void clearpass() {
