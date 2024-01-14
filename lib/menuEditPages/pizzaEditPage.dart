@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../mainPages/profile.dart';
-import 'package:resturantapp/MenuPages/pizzaMenu.dart';
-import 'package:resturantapp/mainPages/address1.dart';
+import 'package:resBackEnd/MenuPages/pizzaMenu.dart';
+import 'package:resBackEnd/mainPages/address1.dart';
 
 void main() {
   runApp(EditPizza());

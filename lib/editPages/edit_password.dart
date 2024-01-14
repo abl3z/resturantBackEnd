@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:resturantapp/editPages/forget2.dart';
-import 'package:resturantapp/information.dart';
+import 'package:resBackEnd/editPages/forget2.dart';
+import 'package:resBackEnd/information.dart';
 
-User userInfo = User();
+User1 userInfo = User1();
 void main() {
   runApp(MaterialApp(
     home: editPass(),
@@ -94,8 +94,8 @@ class _appState extends State<editPass> {
                       onPressed: () {
                         setState(() {
                           if (_formKey.currentState!.validate()) {
-                            User.setPassword(_newPasswordController.text);
-                            User.setConfPass(_newPasswordController.text);
+                            User1.setPassword(_newPasswordController.text);
+                            User1.setConfPass(_newPasswordController.text);
                             var sb1 = SnackBar(
                                 content: Text(
                                   "You have Sucessfully Change Your Password",
@@ -161,7 +161,7 @@ class _appState extends State<editPass> {
           return 'Passwords do not match';
         }
         //TODO fix error
-        if (_oldPasswordController.text != User.getPassword()) {
+        if (_oldPasswordController.text != User1.getPassword()) {
           return 'incorrect Old passwords ';
         }
         return null;

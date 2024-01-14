@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:resturantapp/information.dart';
+import 'package:resBackEnd/information.dart';
 import 'package:flutter/services.dart';
-import 'package:resturantapp/MenuPages/menu.dart';
+import 'package:resBackEnd/MenuPages/menu.dart';
 
 void main() {
   runApp(resetPage2());
@@ -150,8 +150,8 @@ class _MyFormState extends State<MyForm> {
                           } else if (value.length < 8) {
                             return "Your Password is not strong enough";
                           } else {
-                            User.setPassword(value);
-                            User.setConfPass(value);
+                            User1.setPassword(value);
+                            User1.setConfPass(value);
                           }
                         },
                         controller: pswd4,

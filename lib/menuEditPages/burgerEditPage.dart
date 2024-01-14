@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:resturantapp/MenuPages/burgerMenu.dart';
-import 'package:resturantapp/mainPages/address1.dart';
+import 'package:resBackEnd/MenuPages/burgerMenu.dart';
+import 'package:resBackEnd/mainPages/address1.dart';
 
 void main() {
   runApp(EditBurger());

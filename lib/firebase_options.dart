@@ -25,7 +25,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -44,38 +47,32 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAgAcBJio6fK6eNba2luKM23-9cUbKA13s',
-    appId: '1:334023134559:web:4de8eaf003c9d7b0eb3aea',
-    messagingSenderId: '334023134559',
-    projectId: 'abll3z',
-    authDomain: 'abll3z.firebaseapp.com',
-    storageBucket: 'abll3z.appspot.com',
-    measurementId: 'G-Z9MBWNMLPS',
+    apiKey: 'AIzaSyAZZtvuRpwCDLis69Ou2fp0bag9oKSy41Y',
+    appId: '1:212215202086:web:f0b6a7f21b6b6fc65c41e7',
+    messagingSenderId: '212215202086',
+    projectId: 'resturant-1b3fc',
+    authDomain: 'resturant-1b3fc.firebaseapp.com',
+    databaseURL: 'https://resturant-1b3fc-default-rtdb.firebaseio.com',
+    storageBucket: 'resturant-1b3fc.appspot.com',
+    measurementId: 'G-H7N77V0E6W',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCJyz1TVe3cOVQXLB5evlKAgqVuD9aWzKQ',
-    appId: '1:334023134559:android:04be1b37c2f68beeeb3aea',
-    messagingSenderId: '334023134559',
-    projectId: 'abll3z',
-    storageBucket: 'abll3z.appspot.com',
+    apiKey: 'AIzaSyB4iz6UM5QEb8G9-FZkZX7eNOog381h0Ak',
+    appId: '1:212215202086:android:67be985b2f3e03e05c41e7',
+    messagingSenderId: '212215202086',
+    projectId: 'resturant-1b3fc',
+    databaseURL: 'https://resturant-1b3fc-default-rtdb.firebaseio.com',
+    storageBucket: 'resturant-1b3fc.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCReR8PQrA3poqkmPaL7_ZqpQrBVaDyf18',
-    appId: '1:334023134559:ios:3cb3b71d723e6af5eb3aea',
-    messagingSenderId: '334023134559',
-    projectId: 'abll3z',
-    storageBucket: 'abll3z.appspot.com',
-    iosBundleId: 'com.example.resturantapp',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCReR8PQrA3poqkmPaL7_ZqpQrBVaDyf18',
-    appId: '1:334023134559:ios:151b602894646c30eb3aea',
-    messagingSenderId: '334023134559',
-    projectId: 'abll3z',
-    storageBucket: 'abll3z.appspot.com',
-    iosBundleId: 'com.example.resturantapp.RunnerTests',
+    apiKey: 'AIzaSyDmdm2fNo_cwMOfyH-ikY4B5VaehHLErNk',
+    appId: '1:212215202086:ios:a2ec1240c3ea38fe5c41e7',
+    messagingSenderId: '212215202086',
+    projectId: 'resturant-1b3fc',
+    databaseURL: 'https://resturant-1b3fc-default-rtdb.firebaseio.com',
+    storageBucket: 'resturant-1b3fc.appspot.com',
+    iosBundleId: 'com.example.resturantBackend',
   );
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:resturantapp/editPages/code.dart';
+import 'package:resBackEnd/editPages/code.dart';
 
 void main() {
   runApp(forgetPage());

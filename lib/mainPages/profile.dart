@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:resturantapp/editPages/edit_profile.dart';
-import 'package:resturantapp/information.dart';
+import '/editPages/edit_profile.dart';
+import '/information.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:resBackEnd/firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-User userInfo = User();
+User1 userInfo = User1();
 
-void main() {
+Future<void> main() async {
   runApp(
     profilePage(),
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class profilePage extends StatelessWidget {
@@ -29,6 +35,13 @@ class PP extends StatefulWidget {
 }
 
 class _ppState extends State<PP> {
+  // String updateFullName() {
+  //   setState(() {
+  //     return User.setFullName(User.getFullName());
+  //   });
+  //   return '';
+  // }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -104,7 +117,7 @@ class _ppState extends State<PP> {
                     ),
                     child: StatefulBuilder(
                       builder: (BuildContext context, StateSetter setState) {
-                        return pp(User.getFullName());
+                        return pp(User1.getFullName());
                       },
                     ),
                   ),
@@ -139,7 +152,7 @@ class _ppState extends State<PP> {
                         style: BorderStyle.solid,
                       ),
                     ),
-                    child: pp(User.getGender()),
+                    child: pp(User1.getGender()),
                   ),
                 ),
               ],
@@ -172,7 +185,7 @@ class _ppState extends State<PP> {
                         style: BorderStyle.solid,
                       ),
                     ),
-                    child: pp(User.getEmail()),
+                    child: pp(Auth().auth.currentUser!.email.toString()),
                   ),
                 ),
               ],
@@ -205,7 +218,7 @@ class _ppState extends State<PP> {
                         style: BorderStyle.solid,
                       ),
                     ),
-                    child: pp(User.getPhoneNumber()),
+                    child: pp(User1.getPhoneNumber()),
                   ),
                 ),
               ],
@@ -224,7 +237,6 @@ class _ppState extends State<PP> {
                   margin: EdgeInsets.only(right: 10.0),
                   child: GestureDetector(
                     onTap: () {
-                      print(User.getGender());
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -270,3 +282,7 @@ Widget pp(String labelText) {
     ),
   );
 }
+
+// Widget exit() {
+//   return ;
+// }

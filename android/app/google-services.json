@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "212215202086",
+    "firebase_url": "https://resturant-1b3fc-default-rtdb.firebaseio.com",
+    "project_id": "resturant-1b3fc",
+    "storage_bucket": "resturant-1b3fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212215202086:android:67be985b2f3e03e05c41e7",
+        "android_client_info": {
+          "package_name": "com.example.resturant_backend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4iz6UM5QEb8G9-FZkZX7eNOog381h0Ak"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212215202086:android:185b755c73c0615a5c41e7",
+        "android_client_info": {
+          "package_name": "com.example.resturantapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4iz6UM5QEb8G9-FZkZX7eNOog381h0Ak"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

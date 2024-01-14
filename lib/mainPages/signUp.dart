@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
-import 'package:resturantapp/MenuPages/menu.dart';
-import 'package:resturantapp/information.dart';
+import '/MenuPages/menu.dart';
+import '/information.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:resBackEnd/firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-User userInfo = User();
+User1 userInfo = User1();
 int _selectedGender = 0;
 
-void main() {
+Future<void> main() async {
   runApp(Signup());
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class Signup extends StatelessWidget {
@@ -31,12 +37,46 @@ bool isObscureConfirmPassword = true;
 
 class _InfoState extends State<Info> {
   TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController email = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController PhNum = TextEditingController();
   TextEditingController pswd = TextEditingController();
   TextEditingController pswd_confirm = TextEditingController();
   var _formKey = GlobalKey<FormState>();
+  final DatabaseReference UserRef =
+      FirebaseDatabase.instance.ref().child("users");
+  String gender1 = "";
+  void handleSignUp() {
+    Auth()
+        .signUp(email: emailController.text, password: pswd.text)
+        .whenComplete(() {
+      print("user created");
+      try {
+        Map<dynamic, dynamic> user2 = {
+          "email": emailController.text,
+          "first name": firstNameController.text,
+          "gender": gender1,
+          "phone number": PhNum.text,
+          "password": pswd.text,
+        };
+
+        Future.delayed(Duration(seconds: 4)).whenComplete(() {
+          if (Auth().auth.currentUser == null) {
+            print("user uid is null");
+          }
+          print(Auth().auth.currentUser!.uid);
+          UserRef.child(Auth().auth.currentUser!.uid).set(user2).then((value) {
+            print("user added to database");
+          }).catchError((erorr) {
+            print("failed to add user to database");
+            print(erorr.toString());
+          });
+        });
+      } on FirebaseException catch (error) {
+        print("error eccured...........................................");
+        print(error.message);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +131,7 @@ class _InfoState extends State<Info> {
                                 if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
                                   return 'Only Alphabetical Characters Allowed';
                                 } else {
-                                  User.setFullName(value);
+                                  User1.setFullName(value);
                                 }
                               },
                               controller: firstNameController,
@@ -101,7 +141,7 @@ class _InfoState extends State<Info> {
                                 hintText: "Full Name",
                                 labelStyle: TextStyle(color: Colors.black),
                                 icon: Icon(
-                                  Icons.abc,
+                                  Icons.account_circle_rounded,
                                   color: Colors.amber,
                                   size: 40,
                                 ),
@@ -148,11 +188,13 @@ class _InfoState extends State<Info> {
                           setState(() {
                             if (newGender == 0) {
                               _selectedGender = 0;
+                              gender1 = "Male";
                             } else {
                               _selectedGender = 1;
+                              gender1 = "Female";
                             }
                             //TODO Fix the gender not responding
-                            User.setGender(
+                            User1.setGender(
                               _selectedGender,
                             );
                           });
@@ -184,10 +226,10 @@ class _InfoState extends State<Info> {
                             .hasMatch(value!)) {
                           return 'Please Enter a Valid Email Address';
                         } else {
-                          User.setEmail(value);
+                          User1.setEmail(value);
                         }
                       },
-                      controller: email,
+                      controller: emailController,
                       decoration: InputDecoration(
                         iconColor: Colors.black,
                         labelText: ("Enter Your Email"),
@@ -216,7 +258,7 @@ class _InfoState extends State<Info> {
                         if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                           return 'Only Numbers';
                         } else {
-                          User.setPhoneNumber(value);
+                          User1.setPhoneNumber(value);
                         }
                       },
                       controller: PhNum,
@@ -246,7 +288,7 @@ class _InfoState extends State<Info> {
                         if (value!.isEmpty) {
                           return 'Please Enter Your Password';
                         } else {
-                          User.setPassword(value);
+                          User1.setPassword(value);
                         }
                       },
                       controller: pswd,
@@ -291,7 +333,7 @@ class _InfoState extends State<Info> {
                         if (value!.isEmpty) {
                           return "Please Enter Your Password";
                         } else {
-                          User.setConfPass(value);
+                          User1.setConfPass(value);
                         }
                       },
                       controller: pswd_confirm,
@@ -344,12 +386,14 @@ class _InfoState extends State<Info> {
                                       "--------------------------------------------------------------");
                                   // print(info);
                                   // print(check);
+                                  handleSignUp();
+
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => Menu(
-                                        fullName: User.getFullName(),
-                                        email: User.getEmail(),
+                                        fullName: User1.getFullName(),
+                                        email: User1.getEmail(),
                                       ),
                                     ),
                                   );

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:resturantapp/mainPages/SignUp.dart';
-import 'package:resturantapp/editPages/forget.dart';
-import 'package:resturantapp/MenuPages/menu.dart';
-import 'package:resturantapp/information.dart';
+import '/mainPages/SignUp.dart';
+import '/editPages/forget.dart';
+import '/MenuPages/menu.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:resBackEnd/firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
+import '/information.dart';
 
-User userInfo = User();
-
-void main() {
+Future<void> main() async {
   runApp(
     Login(),
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 String fullNamelogin = '';
@@ -72,6 +76,11 @@ class _MyFormState extends State<MyForm> {
   TextEditingController pswd = TextEditingController();
   TextEditingController email2 = TextEditingController();
   bool isObscureConfirmPassword = true;
+  void handleSignIn() {
+    Auth().signIn(email: email2.text, password: pswd.text).whenComplete(() {
+      print("user signed");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,12 +103,6 @@ class _MyFormState extends State<MyForm> {
                                     r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
                                 .hasMatch(value!)) {
                               return 'Please Enter a Valid Email Address';
-                            }
-                            bool flag = userInfo.checkAcc(value);
-                            if (!flag) {
-                              return "This Acc is not validate";
-                            } else {
-                              User.setUserAcc(value);
                             }
                           },
                           controller: email2,
@@ -130,10 +133,6 @@ class _MyFormState extends State<MyForm> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "Please Enter Your Password";
-                            }
-                            bool flag = userInfo.checkPass(value);
-                            if (!flag) {
-                              return "Your Password is incorrect";
                             }
                           },
                           controller: pswd,
@@ -187,7 +186,6 @@ class _MyFormState extends State<MyForm> {
                               fontWeight: FontWeight.bold),
                         ),
                         onPressed: () {
-                          // User.setUserAcc(email);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -204,6 +202,8 @@ class _MyFormState extends State<MyForm> {
                         ),
                         onPressed: () {
                           if (_key.currentState!.validate()) {
+                            handleSignIn();
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(

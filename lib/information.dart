@@ -1,9 +1,40 @@
-class User {
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:resBackEnd/firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
+
+class Auth {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  User? get currentUser => auth.currentUser;
+  Stream<User?> get authStateChanges => auth.authStateChanges();
+  Future<void> signIn({required String email, required String password}) async {
+    await auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  Future<void> signUp({required String email, required String password}) async {
+    auth.createUserWithEmailAndPassword(email: email, password: password);
+  }
+
+  Future<void> singOut() async {
+    await auth.signOut();
+  }
+}
+
+class User1 {
   static Map<String, String> _userInfo = {
     'fullName': '',
-    'gender': 'male',
     'email': '',
     'phoneNumber': '',
+    'gender': 'male',
   };
 
   static Map<String, String> _pass = {
@@ -17,25 +48,6 @@ class User {
 
   static void setFullName(String fullName) {
     _userInfo['fullName'] = fullName;
-  }
-
-  static void setUserAcc(String email) {
-    if (email == "saleh@gmail.com") {
-      _userInfo['fullName'] = "Saleh Abualezz";
-      _userInfo['gender'] = "male";
-      _userInfo['email'] = "saleh@gmail.com";
-      _userInfo['phoneNumber'] = "0786660448";
-      _pass['password'] = "saleh123";
-      _pass['password'] = "saleh123";
-    }
-    if (email == "ma_jawarneh@asu.edu.jo") {
-      _userInfo['fullName'] = "Mahmoud Aljawarneh";
-      _userInfo['gender'] = "male";
-      _userInfo['email'] = "ma_jawarneh@asu.edu.jo";
-      _userInfo['phoneNumber'] = "0781417262";
-      _pass['password'] = "mahmoud079";
-      _pass['password'] = "mahmoud079";
-    }
   }
 
   static String getGender() {
@@ -95,8 +107,8 @@ class User {
   }
 
   static void logout() {
-    User.clearUserInfo();
-    User.clearpass();
+    User1.clearUserInfo();
+    User1.clearpass();
   }
 
   int checkGender(String gender) {
@@ -104,24 +116,5 @@ class User {
       return 0;
     }
     return 1;
-  }
-
-  bool checkPass(String pass) {
-    if (_userInfo['email'] == "saleh@gmail.com" && pass == 'saleh123') {
-      return true;
-    } else if (_userInfo['email'] == "ma_jawarneh@asu.edu.jo" &&
-        pass == 'mahmoud079') {
-      return true;
-    }
-    return false;
-  }
-
-  bool checkAcc(String acc) {
-    if (acc == "saleh@gmail.com") {
-      return true;
-    } else if (acc == "ma_jawarneh@asu.edu.jo") {
-      return true;
-    }
-    return false;
   }
 }

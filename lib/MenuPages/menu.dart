@@ -7,17 +7,23 @@ import 'appMenu.dart';
 import '../mainPages/profile.dart';
 import '../mainPages/login.dart';
 import '../mainPages/address1.dart';
-import 'package:resturantapp/shahem.dart';
-import 'package:resturantapp/information.dart';
+import '/shahem.dart';
+import '/information.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:resBackEnd/firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-User userInfo = User();
+User1 userInfo = User1();
 
-void main() {
+Future<void> main() async {
   runApp(
     MaterialApp(
       home: Menu(),
     ),
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 class Menu extends StatefulWidget {
@@ -147,11 +153,11 @@ class _mydrwrState extends State<mydrwr> {
         children: [
           UserAccountsDrawerHeader(
             accountName: Text(
-              User.getFullName(),
+              User1.getFullName(),
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             accountEmail: Text(
-              User.getEmail(),
+              Auth().auth.currentUser!.email.toString(),
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             currentAccountPicture: CircleAvatar(
@@ -334,13 +340,8 @@ class _menulistState extends State<menulist> {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      User.logout();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Login(),
-                        ),
-                      );
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Login()));
                     },
                     child: Text(
                       'Log Out',
@@ -349,6 +350,11 @@ class _menulistState extends State<menulist> {
                   ),
                   TextButton(
                     onPressed: () {
+                      User1.logout();
+                      setState(() {
+                        Auth().auth.signOut();
+                      });
+
                       Navigator.pop(context);
                     },
                     child: Text(

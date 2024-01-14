@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:resturantapp/MenuPages/menu.dart';
+import 'package:resBackEnd/MenuPages/menu.dart';
 import '../mainPages/profile.dart';
 import '../menuEditPages/shawarmaEditPage.dart';
-import 'package:resturantapp/mainPages/address1.dart';
+import 'package:resBackEnd/mainPages/address1.dart';
 
 void main() {
   runApp(shawarmaMenu());

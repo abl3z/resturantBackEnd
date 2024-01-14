@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'edit_password.dart';
-import 'package:resturantapp/information.dart';
-import 'package:resturantapp/MenuPages/menu.dart';
+import 'package:resBackEnd/information.dart';
+import 'package:resBackEnd/MenuPages/menu.dart';
 
-User userInfo = User();
+User1 userInfo = User1();
 
 void main() {
   runApp(MaterialApp(home: editProfile()));
@@ -22,14 +22,14 @@ class _editProfileState extends State<editProfile> {
   int _selectedGender = 0;
   var _formKey = GlobalKey<FormState>();
   TextEditingController fullNameController =
-      TextEditingController(text: User.getFullName());
+      TextEditingController(text: User1.getFullName());
   TextEditingController emailController =
-      TextEditingController(text: User.getEmail());
+      TextEditingController(text: User1.getEmail());
   TextEditingController phoneController =
-      TextEditingController(text: User.getPhoneNumber()); //
+      TextEditingController(text: User1.getPhoneNumber()); //
   void initState() {
     super.initState();
-    _selectedGender = userInfo.checkGender(User.getGender());
+    _selectedGender = userInfo.checkGender(User1.getGender());
   }
 
   @override
@@ -178,10 +178,10 @@ class _editProfileState extends State<editProfile> {
                                 context,
                                 MaterialPageRoute(builder: (context) => Menu()),
                               );
-                              User.setFullName(fullNameController.text);
-                              User.setGender(_selectedGender);
-                              User.setEmail(emailController.text);
-                              User.setPhoneNumber(phoneController.text);
+                              User1.setFullName(fullNameController.text);
+                              User1.setGender(_selectedGender);
+                              User1.setEmail(emailController.text);
+                              User1.setPhoneNumber(phoneController.text);
                             });
                           }
                         },
@@ -230,11 +230,11 @@ class _editProfileState extends State<editProfile> {
 }
 
 TextEditingController textController1 =
-    TextEditingController(text: User.getFullName());
+    TextEditingController(text: User1.getFullName());
 TextEditingController textController2 =
-    TextEditingController(text: User.getEmail());
+    TextEditingController(text: User1.getEmail());
 TextEditingController textController3 =
-    TextEditingController(text: User.getPhoneNumber());
+    TextEditingController(text: User1.getPhoneNumber());
 
 Widget package(int num, String txt, String conTxt,
     TextEditingController controller, String? Function(String?)? validator) {
@@ -250,7 +250,7 @@ Widget package(int num, String txt, String conTxt,
             validator: validator,
             decoration: InputDecoration(
               labelText: txt,
-              hintText: User.getFullName(),
+              hintText: User1.getFullName(),
               errorStyle: TextStyle(color: Colors.red),
               border: OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
