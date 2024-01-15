@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'login.dart';
 import '/MenuPages/menu.dart';
@@ -5,7 +6,9 @@ import '/information.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:resBackEnd/firebase_options.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 User1 userInfo = User1();
 int _selectedGender = 0;
@@ -38,6 +41,8 @@ bool isObscureConfirmPassword = true;
 class _InfoState extends State<Info> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+    TextEditingController emailController1 = TextEditingController();
+
   TextEditingController PhNum = TextEditingController();
   TextEditingController pswd = TextEditingController();
   TextEditingController pswd_confirm = TextEditingController();
@@ -60,7 +65,13 @@ class _InfoState extends State<Info> {
   final DatabaseReference UserRef =
       FirebaseDatabase.instance.ref().child("users");
   String gender1 = "";
+  final Reference profilreimagreref = FirebaseStorage.instance
+      .ref()
+      .child("UserProfileImage/${DateTime.now().millisecondsSinceEpoch}.jpg");
+
   Future<void> handleSignUp() async {
+    UploadTask uploadTask = profilreimagreref.putData(img!.files.first.bytes!);
+    String imgurl = await (await uploadTask).ref.getDownloadURL();
     try {
       await Auth()
           .signUp(email: emailController.text, password: pswd.text)
@@ -70,8 +81,7 @@ class _InfoState extends State<Info> {
               name: firstNameController.text,
               email: emailController.text,
               phone_Num: PhNum.text,
-              photo:
-                  "https://i.kym-cdn.com/entries/icons/facebook/000/041/742/cover3.jpg");
+              photo: imgurl);
           print("registered success");
           var userid = Auth().auth.currentUser!.uid;
           userref
@@ -90,6 +100,20 @@ class _InfoState extends State<Info> {
   }
 
   final DatabaseReference userref = FirebaseDatabase.instance.reference();
+
+  FilePickerResult? img;
+  Future<void> pickAnImage() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+    if (result == null) {
+      return null;
+    } else {
+      setState(() {
+        img = result;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -128,6 +152,71 @@ class _InfoState extends State<Info> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  img == null
+                      ? Center(
+                          child: IconButton(
+                              onPressed: () {
+                                pickAnImage();
+                              },
+                              icon: CircleAvatar(
+                                radius: 70,
+                                backgroundImage: NetworkImage(User1.getPhoto()),
+                              )))
+                      : Center(
+                          child: IconButton(
+                              onPressed: () {
+                                pickAnImage();
+                              },
+                              icon: CircleAvatar(
+                                backgroundImage:
+                                    MemoryImage(img!.files.first.bytes!),
+                                radius: 70,
+                              )),
+                        ),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.photo,
+                          color: Colors.amber,
+                          size: 30,
+                        ),
+                        Text(
+                          " Click on the photo to select a new one",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Center(
+                    child: Padding(
+                      
+                      padding: const EdgeInsets.all(10),
+                      child: TextFormField(
+                        validator: (value) {
+                          
+                          if (img==null)
+                               {
+                            return 'Please Pick a photo';
+                          }
+                        },
+                        textAlign: TextAlign.center,
+                        
+                        controller: emailController1,
+                        
+                      ),
+                    ),
+                  ),
+
+
+
+
+
+                  SizedBox(
+                    height: 45,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child: Row(

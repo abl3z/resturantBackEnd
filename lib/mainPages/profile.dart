@@ -1,6 +1,8 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import '/editPages/edit_profile.dart';
 import '/information.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:resBackEnd/firebase_options.dart';
@@ -39,9 +41,25 @@ class _ppState extends State<PP> {
   //   });
   //   return '';
   // }
-  User1 userInfo = User1();
 
   UserDetails? user;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchUserData();
+  }
+  void fetchUserData() async{
+    FirebaseService fbs= FirebaseService();
+    UserDetails? temUser = await fbs.getUserDetails(Auth().auth.currentUser!.uid);
+    if(temUser==null){
+      print("user is not check your code");
+    }else{
+      setState(() {
+        user= temUser;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,28 +107,28 @@ class _ppState extends State<PP> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 70,
-              backgroundImage: NetworkImage(User1.getPhoto()),
+              radius: 40,
+              backgroundImage: NetworkImage(user!.photo),
             ),
             SizedBox(
-              height: 50,
+              height: 30,
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 27,
+                  width: 37,
                 ),
                 Text(
                   "Name",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  width: 25,
+                  width: 30,
                 ),
                 SizedBox(
-                  height: 47,
+                  height: 37,
                   width: 360, // Set the desired height
                   child: Container(
                     decoration: BoxDecoration(
@@ -122,7 +140,7 @@ class _ppState extends State<PP> {
                     ),
                     child: StatefulBuilder(
                       builder: (BuildContext context, StateSetter setState) {
-                        return pp(User1.getFullName());
+                        return pp(user!.name);
                       },
                     ),
                   ),
@@ -130,24 +148,24 @@ class _ppState extends State<PP> {
               ],
             ),
             SizedBox(
-              height: 70,
+              height: 30,
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 27,
+                  width: 37,
                 ),
                 Text(
                   "Gender",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  width: 25,
+                  width: 30,
                 ),
                 SizedBox(
-                  height: 47,
+                  height: 37,
                   width: 360, // Set the desired height
                   child: Container(
                     decoration: BoxDecoration(
@@ -163,24 +181,24 @@ class _ppState extends State<PP> {
               ],
             ),
             SizedBox(
-              height: 70,
+              height: 30,
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 27,
+                  width: 37,
                 ),
                 Text(
                   "Email",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  width: 25,
+                  width: 30,
                 ),
                 SizedBox(
-                  height: 47,
+                  height: 37,
                   width: 360, // Set the desired height
                   child: Container(
                     decoration: BoxDecoration(
@@ -190,30 +208,30 @@ class _ppState extends State<PP> {
                         style: BorderStyle.solid,
                       ),
                     ),
-                    child: pp(User1.getEmail()),
+                    child: pp(user!.email),
                   ),
                 ),
               ],
             ),
             SizedBox(
-              height: 70,
+              height: 30,
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 27,
+                  width: 37,
                 ),
                 Text(
                   "Phone Number",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  width: 25,
+                  width: 30,
                 ),
                 SizedBox(
-                  height: 47,
+                  height: 37,
                   width: 360, // Set the desired height
                   child: Container(
                     decoration: BoxDecoration(
@@ -229,13 +247,13 @@ class _ppState extends State<PP> {
               ],
             ),
             SizedBox(
-              height: 50,
+              height: 30,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 55,
+                  width: 37,
                 ),
                 Container(
                   alignment: Alignment.center,
@@ -259,8 +277,15 @@ class _ppState extends State<PP> {
                   ),
                 ),
                 SizedBox(
-                  width: 50,
+                  width: 20,
                 ),
+                ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (_){
+                      return AddCat();
+                    }));
+                  }, 
+                  child: Text("Add category to db"))
               ],
             ),
           ],
@@ -268,6 +293,15 @@ class _ppState extends State<PP> {
       ),
     );
   }
+  
+  
+
+
+
+
+  
+
+  
 }
 
 Widget pp(String labelText) {
@@ -291,3 +325,76 @@ Widget pp(String labelText) {
 // Widget exit() {
 //   return ;
 // }
+class AddCat extends StatefulWidget {
+  const AddCat({super.key});
+
+  @override
+  State<AddCat> createState() => _AddCatState();
+}
+
+class _AddCatState extends State<AddCat> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add category"),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        
+        children: [
+          _img == null
+                      ? Center(
+                          child: IconButton(
+                              onPressed: () {
+                                pickAnImage();
+                              },
+                              icon: CircleAvatar(
+                                radius: 70,
+                                backgroundImage: NetworkImage(User1.getPhoto()),
+                              )))
+                      : Center(
+                          child: IconButton(
+                              onPressed: () {
+                                pickAnImage();
+                              },
+                              icon: CircleAvatar(
+                                backgroundImage:
+                                    MemoryImage(_img!.files.first.bytes!),
+                                radius: 70,
+                              )),
+                        ),
+            ElevatedButton(onPressed: (){
+              handleaddcategory("Pizza");
+            }, child: Text("add now"))
+        ],
+      ),
+    );
+  }
+    Future<void> handleaddcategory(String cat) async {
+
+    final DatabaseReference refCat= FirebaseDatabase.instance.ref().child("Category");
+    final Reference catSorageRef= FirebaseStorage.instance.ref().child("categoryImages/${DateTime.now().millisecondsSinceEpoch}.jpg");
+ UploadTask uploadTask = catSorageRef.putData(_img!.files.first.bytes!);
+    String imgurl = await (await uploadTask).ref.getDownloadURL();
+    Map<dynamic, dynamic> catMap={
+      "catName":cat,
+      "imgURL": imgurl
+    };
+    refCat.push().set(catMap).whenComplete(() {
+            print("user added to database");
+    });
+  }
+   FilePickerResult? _img;
+  Future<void> pickAnImage() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+    if (result == null) {
+      return null;
+    } else {
+      setState(() {
+        _img = result;
+      });
+    }
+  }
+}

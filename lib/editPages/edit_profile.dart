@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:resBackEnd/firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 User1 userInfo = User1();
 
@@ -40,10 +41,17 @@ class _editProfileState extends State<editProfile> {
     _selectedGender = userInfo.checkGender(User1.getGender());
   }
 
-  FilePickerResult? img;
+  FilePickerResult? _img;
   Future<void> pickAnImage() async {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(type: FileType.image);
+    if (result == null) {
+      return null;
+    } else {
+      setState(() {
+        _img = result;
+      });
+    }
   }
 
   @override
@@ -93,16 +101,27 @@ class _editProfileState extends State<editProfile> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: IconButton(
-                      onPressed: () {
-                        pickAnImage();
-                      },
-                      icon: CircleAvatar(
-                        radius: 70,
-                        backgroundImage: NetworkImage(User1.getPhoto()),
-                      )),
-                ),
+                _img == null
+                    ? Center(
+                        child: IconButton(
+                            onPressed: () {
+                              pickAnImage();
+                            },
+                            icon: CircleAvatar(
+                              radius: 70,
+                              backgroundImage: NetworkImage(User1.getPhoto()),
+                            )))
+                    : Center(
+                        child: IconButton(
+                            onPressed: () {
+                              pickAnImage();
+                            },
+                            icon: CircleAvatar(
+                              backgroundImage:
+                                  MemoryImage(_img!.files.first.bytes!),
+                              radius: 70,
+                            )),
+                      ),
                 SizedBox(
                   height: 45,
                 ),

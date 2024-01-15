@@ -25,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -73,6 +70,18 @@ class DefaultFirebaseOptions {
     projectId: 'resturant-1b3fc',
     databaseURL: 'https://resturant-1b3fc-default-rtdb.firebaseio.com',
     storageBucket: 'resturant-1b3fc.appspot.com',
+    iosClientId: '212215202086-avq9bgnqdqao4pm48a8ipaj0iuaqptrm.apps.googleusercontent.com',
     iosBundleId: 'com.example.resturantBackend',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDmdm2fNo_cwMOfyH-ikY4B5VaehHLErNk',
+    appId: '1:212215202086:ios:a6a276de65104fd05c41e7',
+    messagingSenderId: '212215202086',
+    projectId: 'resturant-1b3fc',
+    databaseURL: 'https://resturant-1b3fc-default-rtdb.firebaseio.com',
+    storageBucket: 'resturant-1b3fc.appspot.com',
+    iosClientId: '212215202086-ngsuldmlg4146rdak4uh3m8ph6vs2s30.apps.googleusercontent.com',
+    iosBundleId: 'com.example.resturantBackend.RunnerTests',
   );
 }
