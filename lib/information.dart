@@ -65,6 +65,60 @@ class UserDetails {
   }
 }
 
+
+
+
+class pizzaDetails {
+  String pizzaName;
+  
+  String imgURL;
+     pizzaDetails(
+      {
+        required this.imgURL,
+        required this.pizzaName
+      }
+       
+       );
+  
+
+  Map<dynamic, dynamic> toMap() {
+    return {
+      "pizzaName":pizzaName,
+      
+      "imgURL": imgURL,
+    };
+  }
+}
+
+
+class burDetails {
+  String? burName;
+  
+  String? imgURL;
+
+     burDetails(
+      {
+        required this.imgURL,
+        required this.burName
+      }
+       
+       );
+  
+
+  Map<dynamic, dynamic> toMap() {
+    return {
+      "pizzaName":burName,
+      
+      "imgURL": imgURL,
+    };
+  }
+
+}
+
+
+
+
+
 class FirebaseService {
   Future<UserDetails?> getUserDetails(String useruid) async {
     try {
@@ -80,8 +134,16 @@ class FirebaseService {
       print(e.toString());
     }
     return null;
-  }
+  }   
+
+
+
+
+
+
 }
+
+
 
 class User1 {
   static Map<String, String> userInfo = {

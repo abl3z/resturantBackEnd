@@ -61,6 +61,18 @@ class _ppState extends State<PP> {
     }
   }
 
+  Future<void> fetchpizzaData() async {
+    String userid = Auth().auth.currentUser!.uid;
+    UserDetails? usr = await FirebaseService().getUserDetails(userid);
+    if (usr != null) {
+      setState(() {
+        user = usr;
+      });
+    } else {
+      print("user not available");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -285,7 +297,27 @@ class _ppState extends State<PP> {
                       return AddCat();
                     }));
                   }, 
-                  child: Text("Add category to db"))
+                  child: Text("Add category to db"),),
+                  
+                  ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (_){
+                      return addpizza();
+                    },),);
+                  }, 
+                  child: Text("Add pizza product to db"),
+                  ),
+                  
+                  ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (_){
+                      return addbur();
+                    },),);
+                  }, 
+                  child: Text("Add burger product to db"),
+                  ),
+
+                 
               ],
             ),
           ],
@@ -351,7 +383,7 @@ class _AddCatState extends State<AddCat> {
                               },
                               icon: CircleAvatar(
                                 radius: 70,
-                                backgroundImage: NetworkImage(User1.getPhoto()),
+                              backgroundColor: Colors.amber,
                               )))
                       : Center(
                           child: IconButton(
@@ -365,7 +397,7 @@ class _AddCatState extends State<AddCat> {
                               )),
                         ),
             ElevatedButton(onPressed: (){
-              handleaddcategory("Pizza");
+              handleaddcategory("cat");
             }, child: Text("add now"))
         ],
       ),
@@ -398,3 +430,183 @@ class _AddCatState extends State<AddCat> {
     }
   }
 }
+class addpizza extends StatefulWidget {
+  const addpizza({super.key});
+
+  @override
+  State<addpizza> createState() => _addpizzaState();
+}
+
+class _addpizzaState extends State<addpizza> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add pizza product"),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        
+        children: [
+          _img == null
+                      ? Center(
+                          child: IconButton(
+                              onPressed: () {
+                                pickAnImage();
+                              },
+                              icon: CircleAvatar(
+                                radius: 70,
+                               backgroundColor: Colors.amber,
+                              )))
+                      : Center(
+                          child: IconButton(
+                              onPressed: () {
+                                pickAnImage();
+                              },
+                              icon: CircleAvatar(
+                                backgroundImage:
+                                    MemoryImage(_img!.files.first.bytes!),
+                                radius: 70,
+                              )),
+                        ),
+            ElevatedButton(onPressed: (){
+              handlepizza("Pizza");
+            }, child: Text("add now"))
+        ],
+      ),
+    );
+  }
+
+
+
+Future<void> handlepizza(String pizza) async {
+
+    final DatabaseReference refpizza= FirebaseDatabase.instance.ref().child("Pizza");
+
+
+    final Reference pizzaSorageRef= FirebaseStorage.instance.ref().child("pizzaImages/${DateTime.now().millisecondsSinceEpoch}.jpg");
+
+
+ UploadTask uploadTask = pizzaSorageRef.putData(_img!.files.first.bytes!);
+    String imgurl_pizza = await (await uploadTask).ref.getDownloadURL();
+    Map<dynamic, dynamic> pizzaMap={
+      "pizzaName":pizza,
+      "imgURL": imgurl_pizza
+    };
+    refpizza.push().set(pizzaMap).whenComplete(() {
+            print("pizza product added to database");
+    });
+  }
+   FilePickerResult? _img;
+  Future<void> pickAnImage() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+    if (result == null) {
+      return null;
+    } else {
+      setState(() {
+        _img = result;
+      });
+    }
+  }
+
+
+}
+
+class addbur extends StatefulWidget {
+  const addbur({super.key});
+
+  @override
+  State<addbur> createState() => _addburState();
+}
+
+class _addburState extends State<addbur> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add burger product"),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        
+        children: [
+          _img == null
+                      ? Center(
+                          child: IconButton(
+                              onPressed: () {
+                                pickAnImage();
+                              },
+                              icon: CircleAvatar(
+                                radius: 70,
+                                backgroundColor: Colors.amber,
+                              )))
+                      : Center(
+                          child: IconButton(
+                              onPressed: () {
+                                pickAnImage();
+                              },
+                              icon: CircleAvatar(
+                                backgroundImage:
+                                    MemoryImage(_img!.files.first.bytes!),
+                                radius: 70,
+                              )),
+                        ),
+            ElevatedButton(onPressed: (){
+              handleburger("Burger");
+            }, child: Text("add now"))
+        ],
+      ),
+    );
+  }
+
+
+
+Future<void> handleburger(String burger) async {
+
+    final DatabaseReference refbur= FirebaseDatabase.instance.ref().child("Burger");
+
+
+    final Reference burSorageRef= FirebaseStorage.instance.ref().child("burgerImages/${DateTime.now().millisecondsSinceEpoch}.jpg");
+
+
+ UploadTask uploadTask = burSorageRef.putData(_img!.files.first.bytes!);
+    String imgurl_bur = await (await uploadTask).ref.getDownloadURL();
+    Map<dynamic, dynamic> burMap={
+      "pizzaName":burger,
+      "imgURL": imgurl_bur
+    };
+    refbur.push().set(burMap).whenComplete(() {
+            print("burger product added to database");
+    });
+  }
+   FilePickerResult? _img;
+  Future<void> pickAnImage() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+    if (result == null) {
+      return null;
+    } else {
+      setState(() {
+        _img = result;
+      });
+    }
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
