@@ -49,14 +49,16 @@ class _ppState extends State<PP> {
     super.initState();
     fetchUserData();
   }
-  void fetchUserData() async{
-    FirebaseService fbs= FirebaseService();
-    UserDetails? temUser = await fbs.getUserDetails(Auth().auth.currentUser!.uid);
-    if(temUser==null){
+
+  void fetchUserData() async {
+    FirebaseService fbs = FirebaseService();
+    UserDetails? temUser =
+        await fbs.getUserDetails(Auth().auth.currentUser!.uid);
+    if (temUser == null) {
       print("user is not check your code");
-    }else{
+    } else {
       setState(() {
-        user= temUser;
+        user = temUser;
       });
     }
   }
@@ -292,32 +294,19 @@ class _ppState extends State<PP> {
                   width: 20,
                 ),
                 ElevatedButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (_){
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) {
                       return AddCat();
                     }));
-                  }, 
-                  child: Text("Add category to db"),),
-                  
-                  ElevatedButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (_){
-                      return addpizza();
-                    },),);
-                  }, 
-                  child: Text("Add pizza product to db"),
-                  ),
-                  
-                  ElevatedButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (_){
-                      return addbur();
-                    },),);
-                  }, 
-                  child: Text("Add burger product to db"),
-                  ),
-
-                 
+                  },
+                  child: Text("Add category to db"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    addtoDB();
+                  },
+                  child: Text("Add products to db"),
+                ),
               ],
             ),
           ],
@@ -325,15 +314,18 @@ class _ppState extends State<PP> {
       ),
     );
   }
-  
-  
 
-
-
-
-  
-
-  
+  void addtoDB() {
+    final DatabaseReference dataRef =
+        FirebaseDatabase.instance.ref().child("Category/Products");
+    for (int i = 0; i < photo().Urls.length; ++i) {
+      proDetails pro =
+          proDetails(photoName: photo().names[i], photoUrl: photo().Urls[i]);
+      dataRef.push().set(pro.toMap()).then((value) {
+        print("products details add to DB");
+      });
+    }
+  }
 }
 
 Widget pp(String labelText) {
@@ -373,51 +365,52 @@ class _AddCatState extends State<AddCat> {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        
         children: [
           _img == null
-                      ? Center(
-                          child: IconButton(
-                              onPressed: () {
-                                pickAnImage();
-                              },
-                              icon: CircleAvatar(
-                                radius: 70,
-                              backgroundColor: Colors.amber,
-                              )))
-                      : Center(
-                          child: IconButton(
-                              onPressed: () {
-                                pickAnImage();
-                              },
-                              icon: CircleAvatar(
-                                backgroundImage:
-                                    MemoryImage(_img!.files.first.bytes!),
-                                radius: 70,
-                              )),
-                        ),
-            ElevatedButton(onPressed: (){
-              handleaddcategory("cat");
-            }, child: Text("add now"))
+              ? Center(
+                  child: IconButton(
+                      onPressed: () {
+                        pickAnImage();
+                      },
+                      icon: CircleAvatar(
+                        radius: 70,
+                        backgroundColor: Colors.amber,
+                      )))
+              : Center(
+                  child: IconButton(
+                      onPressed: () {
+                        pickAnImage();
+                      },
+                      icon: CircleAvatar(
+                        backgroundImage: MemoryImage(_img!.files.first.bytes!),
+                        radius: 70,
+                      )),
+                ),
+          ElevatedButton(
+              onPressed: () {
+                handleaddcategory("cat");
+              },
+              child: Text("add now"))
         ],
       ),
     );
   }
-    Future<void> handleaddcategory(String cat) async {
 
-    final DatabaseReference refCat= FirebaseDatabase.instance.ref().child("Category");
-    final Reference catSorageRef= FirebaseStorage.instance.ref().child("categoryImages/${DateTime.now().millisecondsSinceEpoch}.jpg");
- UploadTask uploadTask = catSorageRef.putData(_img!.files.first.bytes!);
+  Future<void> handleaddcategory(String cat) async {
+    final DatabaseReference refCat =
+        FirebaseDatabase.instance.ref().child("Category");
+    final Reference catSorageRef = FirebaseStorage.instance
+        .ref()
+        .child("categoryImages/${DateTime.now().millisecondsSinceEpoch}.jpg");
+    UploadTask uploadTask = catSorageRef.putData(_img!.files.first.bytes!);
     String imgurl = await (await uploadTask).ref.getDownloadURL();
-    Map<dynamic, dynamic> catMap={
-      "catName":cat,
-      "imgURL": imgurl
-    };
+    Map<dynamic, dynamic> catMap = {"catName": cat, "imgURL": imgurl};
     refCat.push().set(catMap).whenComplete(() {
-            print("user added to database");
+      print("user added to database");
     });
   }
-   FilePickerResult? _img;
+
+  FilePickerResult? _img;
   Future<void> pickAnImage() async {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(type: FileType.image);
@@ -430,183 +423,3 @@ class _AddCatState extends State<AddCat> {
     }
   }
 }
-class addpizza extends StatefulWidget {
-  const addpizza({super.key});
-
-  @override
-  State<addpizza> createState() => _addpizzaState();
-}
-
-class _addpizzaState extends State<addpizza> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Add pizza product"),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        
-        children: [
-          _img == null
-                      ? Center(
-                          child: IconButton(
-                              onPressed: () {
-                                pickAnImage();
-                              },
-                              icon: CircleAvatar(
-                                radius: 70,
-                               backgroundColor: Colors.amber,
-                              )))
-                      : Center(
-                          child: IconButton(
-                              onPressed: () {
-                                pickAnImage();
-                              },
-                              icon: CircleAvatar(
-                                backgroundImage:
-                                    MemoryImage(_img!.files.first.bytes!),
-                                radius: 70,
-                              )),
-                        ),
-            ElevatedButton(onPressed: (){
-              handlepizza("Pizza");
-            }, child: Text("add now"))
-        ],
-      ),
-    );
-  }
-
-
-
-Future<void> handlepizza(String pizza) async {
-
-    final DatabaseReference refpizza= FirebaseDatabase.instance.ref().child("Pizza");
-
-
-    final Reference pizzaSorageRef= FirebaseStorage.instance.ref().child("pizzaImages/${DateTime.now().millisecondsSinceEpoch}.jpg");
-
-
- UploadTask uploadTask = pizzaSorageRef.putData(_img!.files.first.bytes!);
-    String imgurl_pizza = await (await uploadTask).ref.getDownloadURL();
-    Map<dynamic, dynamic> pizzaMap={
-      "pizzaName":pizza,
-      "imgURL": imgurl_pizza
-    };
-    refpizza.push().set(pizzaMap).whenComplete(() {
-            print("pizza product added to database");
-    });
-  }
-   FilePickerResult? _img;
-  Future<void> pickAnImage() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
-    if (result == null) {
-      return null;
-    } else {
-      setState(() {
-        _img = result;
-      });
-    }
-  }
-
-
-}
-
-class addbur extends StatefulWidget {
-  const addbur({super.key});
-
-  @override
-  State<addbur> createState() => _addburState();
-}
-
-class _addburState extends State<addbur> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Add burger product"),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        
-        children: [
-          _img == null
-                      ? Center(
-                          child: IconButton(
-                              onPressed: () {
-                                pickAnImage();
-                              },
-                              icon: CircleAvatar(
-                                radius: 70,
-                                backgroundColor: Colors.amber,
-                              )))
-                      : Center(
-                          child: IconButton(
-                              onPressed: () {
-                                pickAnImage();
-                              },
-                              icon: CircleAvatar(
-                                backgroundImage:
-                                    MemoryImage(_img!.files.first.bytes!),
-                                radius: 70,
-                              )),
-                        ),
-            ElevatedButton(onPressed: (){
-              handleburger("Burger");
-            }, child: Text("add now"))
-        ],
-      ),
-    );
-  }
-
-
-
-Future<void> handleburger(String burger) async {
-
-    final DatabaseReference refbur= FirebaseDatabase.instance.ref().child("Burger");
-
-
-    final Reference burSorageRef= FirebaseStorage.instance.ref().child("burgerImages/${DateTime.now().millisecondsSinceEpoch}.jpg");
-
-
- UploadTask uploadTask = burSorageRef.putData(_img!.files.first.bytes!);
-    String imgurl_bur = await (await uploadTask).ref.getDownloadURL();
-    Map<dynamic, dynamic> burMap={
-      "pizzaName":burger,
-      "imgURL": imgurl_bur
-    };
-    refbur.push().set(burMap).whenComplete(() {
-            print("burger product added to database");
-    });
-  }
-   FilePickerResult? _img;
-  Future<void> pickAnImage() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
-    if (result == null) {
-      return null;
-    } else {
-      setState(() {
-        _img = result;
-      });
-    }
-  }
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
- 

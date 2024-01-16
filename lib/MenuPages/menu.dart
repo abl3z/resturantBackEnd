@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'burgerMenu.dart';
 import 'pizzaMenu.dart';
@@ -35,6 +37,8 @@ class Menu extends StatefulWidget {
 }
 
 class MenuState extends State<Menu> {
+  List<proDetails>? pro;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -76,9 +80,9 @@ class MenuState extends State<Menu> {
           children: [
             buildKey(1, "assets/menuPictures/burgers.jpg", context),
             buildKey(2, "assets/menuPictures/pizzas.jpg", context),
-            buildKey(3, "assets/menuPictures/shawarmas.jpg", context),
+            /* buildKey(3, "assets/menuPictures/shawarmas.jpg", context),
             buildKey(4, "assets/menuPictures/drinks.jpg", context),
-            buildKey(5, "assets/menuPictures/appe.jpg", context),
+            buildKey(5, "assets/menuPictures/appe.jpg", context),*/
           ],
         ),
       ),

@@ -65,59 +65,23 @@ class UserDetails {
   }
 }
 
+class proDetails {
+  String photoName;
 
+  String photoUrl;
 
-
-class pizzaDetails {
-  String pizzaName;
-  
-  String imgURL;
-     pizzaDetails(
-      {
-        required this.imgURL,
-        required this.pizzaName
-      }
-       
-       );
-  
-
+  proDetails({required this.photoName, required this.photoUrl});
   Map<dynamic, dynamic> toMap() {
-    return {
-      "pizzaName":pizzaName,
-      
-      "imgURL": imgURL,
-    };
-  }
-}
-
-
-class burDetails {
-  String? burName;
-  
-  String? imgURL;
-
-     burDetails(
-      {
-        required this.imgURL,
-        required this.burName
-      }
-       
-       );
-  
-
-  Map<dynamic, dynamic> toMap() {
-    return {
-      "pizzaName":burName,
-      
-      "imgURL": imgURL,
-    };
+    return {"photoName": photoName, "photoUrl": photoUrl};
   }
 
+  factory proDetails.fromMap(Map<dynamic, dynamic> map) {
+    photoDetails.setname(map["photoName"]);
+    photoDetails.setphotoUrl(map["photoUrl"]);
+
+    return proDetails(photoName: map["photoName"], photoUrl: map["photoUrl"]);
+  }
 }
-
-
-
-
 
 class FirebaseService {
   Future<UserDetails?> getUserDetails(String useruid) async {
@@ -134,16 +98,31 @@ class FirebaseService {
       print(e.toString());
     }
     return null;
-  }   
+  }
 
-
-
-
-
-
+  Future<List<proDetails>> getProDetails() async {
+    DatabaseReference proRef =
+        FirebaseDatabase.instance.ref().child("Category/Products");
+    try {
+      DatabaseEvent event = await proRef.once();
+      if (event.snapshot.value != null) {
+        print(event.snapshot.value.toString());
+        List<proDetails> prolst = [];
+        Map<dynamic, dynamic> snapshotData = event.snapshot.value as dynamic;
+        snapshotData.forEach((key, value) {
+          prolst.add(proDetails.fromMap(value as Map<dynamic, dynamic>));
+        });
+        print("product List: ${prolst.isEmpty}");
+        return prolst;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('Erorr getting product details: $e');
+      return [];
+    }
+  }
 }
-
-
 
 class User1 {
   static Map<String, String> userInfo = {
@@ -242,4 +221,34 @@ class User1 {
     }
     return 1;
   }
+}
+
+class photoDetails {
+  static Map<dynamic, dynamic> userInfo = {'name': '', 'photoUrl': ''};
+  String getname() {
+    return userInfo['name']!;
+  }
+
+  static void setname(String name) {
+    userInfo['name'] = name;
+  }
+
+  String getphotoUrl() {
+    return userInfo['photoUrl']!;
+  }
+
+  static void setphotoUrl(String photoUrl) {
+    userInfo['photoUrl'] = photoUrl;
+  }
+}
+
+class photo {
+  List<String> Urls = [
+    'assets/pizzaPictures/chiPizza.jpg',
+    'assets/pizzaPictures/hawPizza.jpg',
+    'assets/burgerPictures/saraBug.jpg',
+    'assets/burgerPictures/ablezzBug.jpg'
+  ];
+
+  List<String> names = ['chiPizza', 'hawPizza', 'saraBug', 'ablezzBug'];
 }
